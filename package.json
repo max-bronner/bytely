@@ -1,0 +1,32 @@
+{
+  "name": "bytely",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Easily parse binary data into JavaScript Objects",
+  "typings": "dist/index.d.ts",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "vite --port 8080",
+    "build": "tsc && vite build"
+  },
+  "keywords": [
+    "binary",
+    "byte",
+    "parser",
+    "converter",
+    "struct"
+  ],
+  "author": {
+    "name": "Max Bronner",
+    "email": "max2bronner@gmail.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.11"
+  }
+}
