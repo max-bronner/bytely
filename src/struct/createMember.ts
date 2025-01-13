@@ -1,7 +1,11 @@
-import type { ParsedData, Offset, ParserCallback, Member } from './types';
+import { roundUp } from '../utilities/utilities';
+import type { ParsedData, Offset, ParserCallback, PointerOptions, BaseOptions, Member } from './types';
 
 const BYTE_SIZE_1 = 1;
+const BYTE_SIZE_2 = 2;
 const BYTE_SIZE_4 = 4;
+
+const decoder = new TextDecoder();
 
 export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   // todo: extract repeating logic from parsing functions
@@ -31,6 +35,85 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     });
   };
 
+  const uint16 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getUint16(offset, true);
+      byteSize ||= BYTE_SIZE_2;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const int32 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getInt32(offset, true);
+      byteSize ||= BYTE_SIZE_4;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const uint32 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getUint32(offset, true);
+      byteSize ||= BYTE_SIZE_4;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const float32 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getFloat32(offset, true);
+      byteSize ||= BYTE_SIZE_4;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const string = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const charArray = new Uint8Array(view.buffer, offset);
+      const nullIndex = charArray.indexOf(0);
+      const stringArray = charArray.subarray(0, nullIndex);
+      const result = decoder.decode(stringArray);
+      byteSize ||= roundUp(nullIndex, 4);
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const array = (count: number | string, options: BaseOptions = {}) => {
+    const { debug } = options;
+    const arrayMember = createMember('array');
+    callbacks.push((view: DataView, offset: Offset, data) => {
+      if (offset === null) return null;
+      // todo: add exception if no number and no data key
+      const iterations = typeof count === 'number' ? count : (data[count] as number);
+      const arrayData = [];
+      let parsedBytes = 0;
+      for (let i = 0; i < iterations; i++) {
+        const entryData: { array?: any } = {};
+        parsedBytes += arrayMember.parse(view, offset + parsedBytes, entryData);
+        arrayData.push(entryData.array);
+      }
+      byteSize ||= parsedBytes;
+      if (debug) console.debug(name, offset, arrayData);
+      return arrayData;
+    });
+    return arrayMember;
+  };
+
   const parse = (view: DataView, offset: number, data: Partial<T>) => {
     const memberData = callbacks.reduce((acc: number, callback: ParserCallback) => {
       return callback(view, acc, data);
@@ -44,6 +127,12 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   const publicMethods: Member = {
     pointer,
     uint8,
+    uint16,
+    int32,
+    uint32,
+    float32,
+    string,
+    array,
     parse,
   };
 
