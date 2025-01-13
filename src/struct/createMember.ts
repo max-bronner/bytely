@@ -8,21 +8,25 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   let byteSize = 0;
   const callbacks: ParserCallback[] = [];
 
-  const pointer = () => {
+  const pointer = (options: PointerOptions = {}) => {
+    const { debug, allowNullPointer = false } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getUint32(offset, true);
       byteSize ||= BYTE_SIZE_4;
-      return result !== 0 ? result : null;
+      if (debug) console.debug(name, offset, result);
+      return allowNullPointer || result !== 0 ? result : null;
     });
     return publicMethods;
   };
 
-  const uint8 = () => {
+  const uint8 = (options: BaseOptions = {}) => {
+    const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getUint8(offset);
       byteSize ||= BYTE_SIZE_1;
+      if (debug) console.debug(name, offset, result);
       return result;
     });
   };
