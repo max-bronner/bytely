@@ -1,1 +1,1 @@
-console.log('initialized');
+export { createStruct } from './struct/createStruct';
