@@ -149,6 +149,18 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     return arrayMember;
   };
 
+  const custom = (customCallback: CustomCallback, options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset, data) => {
+      if (offset === null) return null;
+      const { byteSize: size, result } = customCallback(view, offset, data);
+      byteSize ||= size;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+    return publicMethods;
+  };
+
   const parse = (view: DataView, offset: number, data: Partial<T>) => {
     const memberData = callbacks.reduce((acc: number, callback: ParserCallback) => {
       return callback(view, acc, data);
@@ -170,6 +182,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     struct,
     structByType,
     array,
+    custom,
     parse,
   };
 

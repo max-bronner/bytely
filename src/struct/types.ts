@@ -25,6 +25,7 @@ export interface Member {
   struct(struct: Struct<ParsedData>, options?: BaseOptions): void;
   structByType(structMap: StructMap, options?: BaseOptions): void;
   array(count: number | string, options?: BaseOptions): Member;
+  custom(customCallback: CustomCallback, options?: BaseOptions): Member;
   parse(view: DataView, offset: number, structData: ParsedData): number;
 }
 
