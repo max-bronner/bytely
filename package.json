@@ -1,6 +1,6 @@
 {
   "name": "bytely",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "type": "module",
   "description": "Easily parse binary data into JavaScript Objects",
   "typings": "dist/index.d.ts",
