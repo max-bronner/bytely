@@ -22,6 +22,8 @@ export interface Member {
   uint32(options?: BaseOptions): void;
   float32(options?: BaseOptions): void;
   string(options?: BaseOptions): void;
+  struct(struct: Struct<ParsedData>, options?: BaseOptions): void;
+  structByType(structMap: StructMap, options?: BaseOptions): void;
   array(count: number | string, options?: BaseOptions): Member;
   parse(view: DataView, offset: number, structData: ParsedData): number;
 }

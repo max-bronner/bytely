@@ -1,5 +1,15 @@
 import { roundUp } from '../utilities/utilities';
-import type { ParsedData, Offset, ParserCallback, PointerOptions, BaseOptions, Member } from './types';
+import type {
+  ParsedData,
+  Offset,
+  Struct,
+  ParserCallback,
+  CustomCallback,
+  PointerOptions,
+  BaseOptions,
+  Member,
+  StructMap,
+} from './types';
 
 const BYTE_SIZE_1 = 1;
 const BYTE_SIZE_2 = 2;
@@ -93,6 +103,31 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     });
   };
 
+  const struct = (struct: Struct<ParsedData>, options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const structData = struct.parse(view, offset, false);
+      byteSize ||= struct.getCurrentOffset() - offset;
+      if (debug) console.debug(name, offset, structData);
+      return structData;
+    });
+  };
+
+  const structByType = (structMap: StructMap, options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const type = view.getUint8(offset);
+      const struct = structMap[type];
+      if (!struct) throw Error(`Missing type: Type ${type} not found in mappings`);
+      const structData = struct.parse(view, offset, false);
+      byteSize ||= struct.getCurrentOffset() - offset;
+      if (debug) console.debug(name, offset, structData);
+      return structData;
+    });
+  };
+
   const array = (count: number | string, options: BaseOptions = {}) => {
     const { debug } = options;
     const arrayMember = createMember('array');
@@ -132,6 +167,8 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     uint32,
     float32,
     string,
+    struct,
+    structByType,
     array,
     parse,
   };
