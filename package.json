@@ -1,13 +1,24 @@
 {
   "name": "bytely",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "description": "Easily parse binary data into JavaScript Objects",
   "typings": "dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
     "dev": "vite --port 8080",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "build:types": "tsc -d --declarationDir dist --declarationMap --emitDeclarationOnly"
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/max-bronner/bytely",
+  "repository": {
+    "url": "https://github.com/max-bronner/bytely"
+  },
+  "bugs": {
+    "url": "https://github.com/max-bronner/bytely/issues"
   },
   "keywords": [
     "binary",
@@ -28,6 +39,7 @@
     "eslint": "^9.18.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.3",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "vite-plugin-dts": "^4.5.0"
   }
 }
