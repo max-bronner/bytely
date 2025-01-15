@@ -1,1 +1,1 @@
-export { createStruct } from './struct/createStruct';
+export { createStruct } from './struct/createStruct.js';
