@@ -12,3 +12,13 @@ Install the `bytely` package via npm:
 npm install bytely
 ```
 
+---
+
+## Usage
+
+### Importing Bytely
+
+```typescript
+import { createStruct } from 'bytely';
+```
+
