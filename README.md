@@ -22,3 +22,16 @@ npm install bytely
 import { createStruct } from 'bytely';
 ```
 
+### Defining Structures
+
+Use `createStruct` to define a structure, and `addMember` to add members to the structure:
+
+```typescript
+const exampleStruct = createStruct();
+exampleStruct.addMember('name').pointer().string();
+exampleStruct.addMember('red').uint8();
+exampleStruct.addMember('green').uint8();
+exampleStruct.addMember('blue').uint8();
+exampleStruct.addMember('number').uint32();
+```
+
