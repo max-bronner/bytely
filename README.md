@@ -67,6 +67,19 @@ console.log(parsedData);
 
 ---
 
+## API Reference
+
+### `createStruct`
+
+Creates a new structure for parsing binary data.
+
+```typescript
+createStruct<T>();
+createStruct<T>(existingStruct);
+```
+
+---
+
 ## License
 
 This project is licensed under the MIT License.
