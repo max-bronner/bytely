@@ -65,3 +65,9 @@ console.log(parsedData);
 // Output: { name: 'Example', red: 102, green: 51, blue: 153, number: 12345678 }
 ```
 
+---
+
+## License
+
+This project is licensed under the MIT License.
+
