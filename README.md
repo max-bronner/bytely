@@ -35,3 +35,13 @@ exampleStruct.addMember('blue').uint8();
 exampleStruct.addMember('number').uint32();
 ```
 
+### Parsing Data
+
+Once you've defined your structure, use its `parse` method to parse a `DataView`:
+
+```typescript
+const view = new DataView(buffer); // DataView of buffer as argument
+
+const data = exampleStruct.parse(view);
+```
+
