@@ -82,6 +82,16 @@ createStruct<T>(existingStruct);
 
 Adds a member to the structure.
 
+#### Supported Data Types
+
+- `uint8`, `uint16`, `uint32`, `int32`
+- `float32`
+- `pointer`
+- `string`
+- `struct`, `structByType`
+- `array`
+- `custom`
+
 ---
 
 ## License
