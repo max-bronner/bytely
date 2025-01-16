@@ -45,3 +45,23 @@ const view = new DataView(buffer); // DataView of buffer as argument
 const data = exampleStruct.parse(view);
 ```
 
+### Example
+
+```typescript
+// Example binary data setup
+const buffer = new ArrayBuffer(20);
+const view = new DataView(buffer);
+view.setUint32(0, 12, true); // pointer to name (offset 12)
+view.setUint8(4, 102); // red
+view.setUint8(5, 51); // green
+view.setUint8(6, 153); // blue
+view.setUint32(7, 12345678, true); // number
+const nameBuffer = new TextEncoder().encode('Example');
+new Uint8Array(buffer).set(nameBuffer, 12);
+
+// Parsing data
+const parsedData = exampleStruct.parse(view);
+console.log(parsedData);
+// Output: { name: 'Example', red: 102, green: 51, blue: 153, number: 12345678 }
+```
+
