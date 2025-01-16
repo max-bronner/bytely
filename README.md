@@ -78,6 +78,10 @@ createStruct<T>();
 createStruct<T>(existingStruct);
 ```
 
+### `addMember`
+
+Adds a member to the structure.
+
 ---
 
 ## License
