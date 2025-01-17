@@ -131,6 +131,30 @@ addMember(name);
 - `array`
 - `custom`
 
+## TypeScript Support
+
+`bytely` is fully typed, allowing you to define and parse structures with strict type checking.
+
+```typescript
+interface Example {
+  name: string;
+  red: number;
+  green: number;
+  blue: number;
+  number: number;
+}
+
+const exampleStruct = createStruct<Example>();
+exampleStruct.addMember('name').pointer().string();
+exampleStruct.addMember('red').uint8();
+exampleStruct.addMember('green').uint8();
+exampleStruct.addMember('blue').uint8();
+exampleStruct.addMember('number').uint32();
+
+const parsedData = exampleStruct.parse(view);
+// parsedData is fully typed according to its struct definition
+```
+
 ---
 
 ## License
