@@ -117,6 +117,10 @@ createStruct<T>(existingStruct);
 
 Adds a member to the structure.
 
+```typescript
+addMember(name);
+```
+
 #### Supported Data Types
 
 - `uint8`, `uint16`, `uint32`, `int32`
