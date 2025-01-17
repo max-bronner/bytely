@@ -65,6 +65,27 @@ console.log(parsedData);
 // Output: { name: 'Example', red: 102, green: 51, blue: 153, number: 12345678 }
 ```
 
+### Custom Parsing
+
+Custom parsing allows you to handle non-standard or more complex data. As default parameters the custom callback exposes the `DataView`, the current `offset` and all `data` parsed so far. Define a callback that returns the byte size of the parsed data and the parsed result:
+
+```typescript
+import { createStruct } from 'bytely';
+
+const customStruct = createStruct();
+customStruct.addMember('dataLength').uint8();
+customStruct.addMember('customData').custom((view, offset, data) => {
+  // different handling of byte length depending on already parsed data
+  if (data.dataLength === 4) {
+    const value = view.getUint32(offset, true);
+    return { byteSize: 4, result: value };
+  } else {
+    const value = view.getUint8(offset);
+    return { byteSize: 1, result: value };
+  }
+});
+```
+
 ### Extending existing structs
 
 You can extend existing structs to reuse and adapt already existing definitions by passing an existing structure as argument to `createStruct`:
@@ -117,6 +138,10 @@ createStruct<T>(existingStruct);
 
 Adds a member to the structure.
 
+```typescript
+addMember(name);
+```
+
 #### Supported Data Types
 
 - `uint8`, `uint16`, `uint32`, `int32`
@@ -126,6 +151,49 @@ Adds a member to the structure.
 - `struct`, `structByType`
 - `array`
 - `custom`
+
+---
+
+## Endianness
+
+Currently the data type parsing only supports little-endian, but there are plans to add big-endian support in the future.
+
+---
+
+## Debugging
+
+Enable debugging by passing an options object with `debug: true` to any parsing method. This will log the member name, current offset and parsed data value:
+
+```typescript
+const data = struct.parse(view, 0, { debug: true });
+// Output: name offset dataValue
+```
+
+---
+
+## TypeScript Support
+
+`bytely` is fully typed, allowing you to define and parse structures with strict type checking.
+
+```typescript
+interface Example {
+  name: string;
+  red: number;
+  green: number;
+  blue: number;
+  number: number;
+}
+
+const exampleStruct = createStruct<Example>();
+exampleStruct.addMember('name').pointer().string();
+exampleStruct.addMember('red').uint8();
+exampleStruct.addMember('green').uint8();
+exampleStruct.addMember('blue').uint8();
+exampleStruct.addMember('number').uint32();
+
+const parsedData = exampleStruct.parse(view);
+// parsedData is fully typed according to its struct definition
+```
 
 ---
 
