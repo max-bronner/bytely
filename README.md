@@ -79,6 +79,22 @@ const point3DStruct = createStruct(point2DStruct);
 point3DStruct.addMember('z').float32();
 ```
 
+### Nested Structures
+
+Define nested structures to parse hierarchical data:
+
+```typescript
+const pointStruct = createStruct();
+pointStruct.addMember('x').float32();
+pointStruct.addMember('y').float32();
+
+// nested struct inside another struct
+const triangleStruct = createStruct();
+point2DStruct.addMember('point1').pointer().struct(pointStruct);
+point2DStruct.addMember('point2').pointer().struct(pointStruct);
+point2DStruct.addMember('point3').pointer().struct(pointStruct);
+```
+
 ---
 
 ## API Reference
