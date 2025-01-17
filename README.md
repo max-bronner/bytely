@@ -131,6 +131,12 @@ addMember(name);
 - `array`
 - `custom`
 
+#### Endianness
+
+Currently the data type parsing only supports little-endian, but there are plans to add big-endian support in the future.
+
+---
+
 ## TypeScript Support
 
 `bytely` is fully typed, allowing you to define and parse structures with strict type checking.
