@@ -158,6 +158,17 @@ Currently the data type parsing only supports little-endian, but there are plans
 
 ---
 
+## Debugging
+
+Enable debugging by passing an options object with `debug: true` to any parsing method. This will log the member name, current offset and parsed data value:
+
+```typescript
+const data = struct.parse(view, 0, { debug: true });
+// Output: name offset dataValue
+```
+
+---
+
 ## TypeScript Support
 
 `bytely` is fully typed, allowing you to define and parse structures with strict type checking.
