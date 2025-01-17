@@ -65,6 +65,27 @@ console.log(parsedData);
 // Output: { name: 'Example', red: 102, green: 51, blue: 153, number: 12345678 }
 ```
 
+### Custom Parsing
+
+Custom parsing allows you to handle non-standard or more complex data. As default parameters the custom callback exposes the `DataView`, the current `offset` and all `data` parsed so far. Define a callback that returns the byte size of the parsed data and the parsed result:
+
+```typescript
+import { createStruct } from 'bytely';
+
+const customStruct = createStruct();
+customStruct.addMember('dataLength').uint8();
+customStruct.addMember('customData').custom((view, offset, data) => {
+  // different handling of byte length depending on already parsed data
+  if (data.dataLength === 4) {
+    const value = view.getUint32(offset, true);
+    return { byteSize: 4, result: value };
+  } else {
+    const value = view.getUint8(offset);
+    return { byteSize: 1, result: value };
+  }
+});
+```
+
 ### Extending existing structs
 
 You can extend existing structs to reuse and adapt already existing definitions by passing an existing structure as argument to `createStruct`:
