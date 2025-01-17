@@ -152,7 +152,9 @@ addMember(name);
 - `array`
 - `custom`
 
-#### Endianness
+---
+
+## Endianness
 
 Currently the data type parsing only supports little-endian, but there are plans to add big-endian support in the future.
 
