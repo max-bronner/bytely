@@ -93,6 +93,11 @@ const triangleStruct = createStruct();
 point2DStruct.addMember('point1').pointer().struct(pointStruct);
 point2DStruct.addMember('point2').pointer().struct(pointStruct);
 point2DStruct.addMember('point3').pointer().struct(pointStruct);
+
+// handling of arrays
+const pointCloudStruct = createStruct();
+pointCloudStruct.addMember('pointCount').uint32();
+pointCloudStruct.addMember('points').pointer().array('pointCount').struct(pointStruct);
 ```
 
 ---
