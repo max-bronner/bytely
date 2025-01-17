@@ -65,6 +65,41 @@ console.log(parsedData);
 // Output: { name: 'Example', red: 102, green: 51, blue: 153, number: 12345678 }
 ```
 
+### Extending existing structs
+
+You can extend existing structs to reuse and adapt already existing definitions by passing an existing structure as argument to `createStruct`:
+
+```typescript
+const point2DStruct = createStruct();
+point2DStruct.addMember('id').uint32();
+point2DStruct.addMember('x').float32();
+point2DStruct.addMember('y').float32();
+
+const point3DStruct = createStruct(point2DStruct);
+point3DStruct.addMember('z').float32();
+```
+
+### Nested Structures
+
+Define nested structures to parse hierarchical data:
+
+```typescript
+const pointStruct = createStruct();
+pointStruct.addMember('x').float32();
+pointStruct.addMember('y').float32();
+
+// nested struct inside another struct
+const triangleStruct = createStruct();
+point2DStruct.addMember('point1').pointer().struct(pointStruct);
+point2DStruct.addMember('point2').pointer().struct(pointStruct);
+point2DStruct.addMember('point3').pointer().struct(pointStruct);
+
+// handling of arrays
+const pointCloudStruct = createStruct();
+pointCloudStruct.addMember('pointCount').uint32();
+pointCloudStruct.addMember('points').pointer().array('pointCount').struct(pointStruct);
+```
+
 ---
 
 ## API Reference
