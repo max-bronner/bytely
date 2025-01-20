@@ -37,4 +37,31 @@ describe('Pointer', () => {
     const result = struct.parse(view, 0);
     expect(result.pointer).toBeNull();
   });
+
+  it('should return multiple defined pointers', () => {
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
+    view.setUint32(0, 1234, true);
+    view.setUint32(4, 5678, true);
+
+    const struct = createStruct();
+    struct.addMember('pointer1').pointer();
+    struct.addMember('pointer2').pointer();
+
+    const result = struct.parse(view, 0);
+    expect(result.pointer1).toBe(1234);
+    expect(result.pointer2).toBe(5678);
+  });
+
+  it('should return pointer at offset', () => {
+    const buffer = new ArrayBuffer(8);
+    const view = new DataView(buffer);
+    view.setUint32(4, 1234, true);
+
+    const struct = createStruct();
+    struct.addMember('pointer').pointer();
+
+    const result = struct.parse(view, 4);
+    expect(result.pointer).toBe(1234);
+  });
 });
