@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { createStruct } from '../src/struct/createStruct';
 
 describe('Pointer', () => {
-  it('should parse valid pointers', () => {
+  it('should return pointer', () => {
     const buffer = new ArrayBuffer(4);
     const view = new DataView(buffer);
     view.setUint32(0, 1234, true);
@@ -26,7 +26,7 @@ describe('Pointer', () => {
     expect(result.pointer).equal(0);
   });
 
-  it('should throw on null pointer when not allowed', () => {
+  it('should return null for not allowed null pointer', () => {
     const buffer = new ArrayBuffer(4);
     const view = new DataView(buffer);
     view.setUint32(0, 0, true);
