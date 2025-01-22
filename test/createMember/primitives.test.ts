@@ -31,4 +31,24 @@ describe('Primitive Types', () => {
       expect(result.value).toBe(1234);
     });
   });
+
+  describe('uint32', () => {
+    it('should parse negative int32 values', () => {
+      view.setUint32(0, 123456, true);
+      struct.addMember('value').int32();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(123456);
+    });
+  });
+
+  describe('int32', () => {
+    it('should parse negative int32 values', () => {
+      view.setInt32(0, -12345, true);
+      struct.addMember('value').int32();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(-12345);
+    });
+  });
 });
