@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createStruct } from '../src/struct/createStruct';
+import { createStruct } from '../../src/struct/createStruct';
 
 describe('Pointer', () => {
   let buffer: ArrayBuffer;
