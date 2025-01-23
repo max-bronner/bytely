@@ -51,4 +51,14 @@ describe('Primitive Types', () => {
       expect(result.value).toBe(-12345);
     });
   });
+
+  describe('float32', () => {
+    it('should parse float32 values', () => {
+      view.setFloat32(0, 3.14, true);
+      struct.addMember('value').float32();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeCloseTo(3.14);
+    });
+  });
 });
