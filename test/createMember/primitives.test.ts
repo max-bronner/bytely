@@ -13,37 +13,67 @@ describe('Primitive Types', () => {
   });
 
   describe('uint8', () => {
+    beforeEach(() => {
+      struct.addMember('value').uint8();
+    });
+
     it('should return uint8 value', () => {
       view.setUint8(0, 42);
-      struct.addMember('value').uint8();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(42);
     });
+
+    it('should not return negative values', () => {
+      view.setUint8(0, -42);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).not.toBe(42);
+    });
   });
 
   describe('uint16', () => {
+    beforeEach(() => {
+      struct.addMember('value').uint16();
+    });
+
     it('should return uint16 value', () => {
       view.setUint16(0, 1234, true);
-      struct.addMember('value').int32();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(1234);
     });
+
+    it('should not return negative values', () => {
+      view.setUint16(0, -1234, true);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).not.toBe(1234);
+    });
   });
 
   describe('uint32', () => {
-    it('should parse negative int32 values', () => {
+    beforeEach(() => {
+      struct.addMember('value').uint32();
+    });
+
+    it('should return uint32 value', () => {
       view.setUint32(0, 123456, true);
-      struct.addMember('value').int32();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(123456);
     });
+
+    it('should not return negative values', () => {
+      view.setUint32(0, -123456, true);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).not.toBe(123456);
+    });
   });
 
   describe('int32', () => {
-    it('should parse negative int32 values', () => {
+    it('should return int32 value', () => {
       view.setInt32(0, -12345, true);
       struct.addMember('value').int32();
 
@@ -53,7 +83,7 @@ describe('Primitive Types', () => {
   });
 
   describe('float32', () => {
-    it('should parse float32 values', () => {
+    it('should return float32 value', () => {
       view.setFloat32(0, 3.14, true);
       struct.addMember('value').float32();
 
