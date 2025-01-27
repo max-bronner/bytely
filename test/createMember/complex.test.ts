@@ -44,4 +44,21 @@ describe('Complex Types', () => {
       expect(result.values).toEqual([40, 41, 42, 43]);
     });
   });
+
+  describe('Structs', () => {
+    it('should return data from a struct type', () => {
+      view.setUint32(0, 42, true);
+      view.setFloat32(4, 3.14, true);
+
+      const subStruct = createStruct();
+      subStruct.addMember('float').float32();
+
+      struct.addMember('int').uint32();
+      struct.addMember('subStruct').struct(subStruct);
+
+      const result = struct.parse(view, 0);
+      expect(result.int).toBe(42);
+      expect(result.subStruct.float).toBeCloseTo(3.14);
+    });
+  });
 });
