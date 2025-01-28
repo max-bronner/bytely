@@ -60,5 +60,26 @@ describe('Complex Types', () => {
       expect(result.int).toBe(42);
       expect(result.subStruct.float).toBeCloseTo(3.14);
     });
+
+    it('should return data from a struct type', () => {
+      view.setUint32(0, 42, true);
+      view.setUint8(4, 1);
+      view.setFloat32(5, 3.14, true);
+
+      const subStruct = createStruct();
+      subStruct.addMember('structType').uint8();
+      subStruct.addMember('float').float32();
+
+      const structMap = {
+        1: subStruct,
+      };
+
+      struct.addMember('int').uint32();
+      struct.addMember('subStruct').structByType(structMap);
+
+      const result = struct.parse(view, 0);
+      expect(result.int).toBe(42);
+      expect(result.subStruct.float).toBeCloseTo(3.14);
+    });
   });
 });
