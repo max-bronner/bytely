@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createStruct } from '../../src/struct/createStruct';
+import { ParsedData } from '../../src/struct/types';
 
 describe('Complex Types', () => {
   let buffer: ArrayBuffer;
@@ -80,6 +81,22 @@ describe('Complex Types', () => {
       const result = struct.parse(view, 0);
       expect(result.int).toBe(42);
       expect(result.subStruct.float).toBeCloseTo(3.14);
+    });
+  });
+
+  describe('Custom Parser', () => {
+    it('should return custom data type', () => {
+      const customParser = (view: DataView, offset: number, data: ParsedData) => {
+        const byteSize = 4;
+        const result = view.getBigInt64(offset, true);
+        return { byteSize, result };
+      };
+
+      view.setBigInt64(0, 123456789n, true);
+      struct.addMember('bigInt').custom(customParser);
+
+      const result = struct.parse(view, 0);
+      expect(result.bigInt).toBe(123456789n);
     });
   });
 });
