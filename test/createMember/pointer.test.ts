@@ -14,7 +14,7 @@ describe('Pointer', () => {
 
   it('should return pointer', () => {
     view.setUint32(0, 1234, true);
-    struct.addMember('pointer').pointer();
+    struct.addMember('pointer').pointer({ debug: true });
 
     const result = struct.parse(view, 0);
     expect(result.pointer).toBe(1234);
