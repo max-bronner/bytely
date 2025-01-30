@@ -44,6 +44,14 @@ describe('Pointer', () => {
     expect(result.pointer).toBe(1234);
   });
 
+  it('should return null for invalid offset', () => {
+    view.setUint32(0, 0, true);
+    struct.addMember('pointer').pointer({ allowNullPointer: false }).pointer();
+
+    const result = struct.parse(view, 0);
+    expect(result.pointer).toBeNull();
+  });
+
   it('should return multiple defined pointers', () => {
     view.setUint32(0, 1234, true);
     view.setUint32(4, 5678, true);
