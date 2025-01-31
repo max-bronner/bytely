@@ -56,6 +56,17 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     });
   };
 
+  const int16 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getInt16(offset, true);
+      byteSize ||= BYTE_SIZE_2;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
   const uint16 = (options: BaseOptions = {}) => {
     const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
@@ -186,6 +197,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     pointer,
     int8,
     uint8,
+    int16,
     uint16,
     int32,
     uint32,
