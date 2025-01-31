@@ -34,6 +34,17 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     return publicMethods;
   };
 
+  const int8 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getInt8(offset);
+      byteSize ||= BYTE_SIZE_1;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
   const uint8 = (options: BaseOptions = {}) => {
     const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
@@ -173,6 +184,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
 
   const publicMethods: Member = {
     pointer,
+    int8,
     uint8,
     uint16,
     int32,
