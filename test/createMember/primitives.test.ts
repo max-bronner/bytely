@@ -17,7 +17,7 @@ describe('Primitive Types', () => {
       struct.addMember('value').int8({ debug: true });
     });
 
-    it('should return uint8 value', () => {
+    it('should return int8 value', () => {
       view.setInt8(0, -42);
 
       const result = struct.parse(view, 0);
@@ -59,6 +59,29 @@ describe('Primitive Types', () => {
 
       struct = createStruct();
       struct.addMember('value').pointer({ allowNullPointer: false }).uint8();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeNull();
+    });
+  });
+
+  describe('int16', () => {
+    beforeEach(() => {
+      struct.addMember('value').int16({ debug: true });
+    });
+
+    it('should return int16 value', () => {
+      view.setInt16(0, -1234, true);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(-1234);
+    });
+
+    it('should return null for invalid offset', () => {
+      view.setUint32(0, 0, true);
+
+      struct = createStruct();
+      struct.addMember('value').pointer({ allowNullPointer: false }).int16();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
