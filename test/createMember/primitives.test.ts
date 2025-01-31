@@ -12,6 +12,29 @@ describe('Primitive Types', () => {
     struct = createStruct();
   });
 
+  describe('int8', () => {
+    beforeEach(() => {
+      struct.addMember('value').int8({ debug: true });
+    });
+
+    it('should return uint8 value', () => {
+      view.setInt8(0, -42);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(-42);
+    });
+
+    it('should return null for invalid offset', () => {
+      view.setUint32(0, 0, true);
+
+      struct = createStruct();
+      struct.addMember('value').pointer({ allowNullPointer: false }).int8();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeNull();
+    });
+  });
+
   describe('uint8', () => {
     beforeEach(() => {
       struct.addMember('value').uint8({ debug: true });
