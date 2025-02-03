@@ -14,6 +14,7 @@ import type {
 const BYTE_SIZE_1 = 1;
 const BYTE_SIZE_2 = 2;
 const BYTE_SIZE_4 = 4;
+const BYTE_SIZE_8 = 8;
 
 const decoder = new TextDecoder();
 
@@ -111,6 +112,17 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     });
   };
 
+  const float64 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getFloat64(offset, true);
+      byteSize ||= BYTE_SIZE_8;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
   const string = (options: BaseOptions = {}) => {
     const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
@@ -202,6 +214,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     int32,
     uint32,
     float32,
+    float64,
     string,
     struct,
     structByType,

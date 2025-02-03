@@ -23,6 +23,7 @@ export interface Member {
   int32(options?: BaseOptions): void;
   uint32(options?: BaseOptions): void;
   float32(options?: BaseOptions): void;
+  float64(options?: BaseOptions): void;
   string(options?: BaseOptions): void;
   struct(struct: Struct<ParsedData>, options?: BaseOptions): void;
   structByType(structMap: StructMap, options?: BaseOptions): void;
