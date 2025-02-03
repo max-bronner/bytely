@@ -183,4 +183,22 @@ describe('Primitive Types', () => {
       expect(result.value).toBeNull();
     });
   });
+
+  describe('float64', () => {
+    it('should return float32 value', () => {
+      view.setFloat64(0, 3.1415926535897932, true);
+      struct.addMember('value').float64({ debug: true });
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeCloseTo(3.1415926535897932);
+    });
+
+    it('should return null for invalid offset', () => {
+      view.setUint32(0, 0, true);
+      struct.addMember('value').pointer({ allowNullPointer: false }).float64();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeNull();
+    });
+  });
 });
