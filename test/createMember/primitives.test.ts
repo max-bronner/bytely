@@ -118,6 +118,24 @@ describe('Primitive Types', () => {
     });
   });
 
+  describe('int32', () => {
+    it('should return int32 value', () => {
+      view.setInt32(0, -12345, true);
+      struct.addMember('value').int32({ debug: true });
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(-12345);
+    });
+
+    it('should return null for invalid offset', () => {
+      view.setUint32(0, 0, true);
+      struct.addMember('value').pointer({ allowNullPointer: false }).int32();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeNull();
+    });
+  });
+
   describe('uint32', () => {
     beforeEach(() => {
       struct.addMember('value').uint32({ debug: true });
@@ -148,18 +166,18 @@ describe('Primitive Types', () => {
     });
   });
 
-  describe('int32', () => {
+  describe('int64', () => {
     it('should return int32 value', () => {
-      view.setInt32(0, -12345, true);
-      struct.addMember('value').int32({ debug: true });
+      view.setBigInt64(0, -12345n, true);
+      struct.addMember('value').int64({ debug: true });
 
       const result = struct.parse(view, 0);
-      expect(result.value).toBe(-12345);
+      expect(result.value).toBe(-12345n);
     });
 
     it('should return null for invalid offset', () => {
       view.setUint32(0, 0, true);
-      struct.addMember('value').pointer({ allowNullPointer: false }).int32();
+      struct.addMember('value').pointer({ allowNullPointer: false }).int64();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
