@@ -112,6 +112,17 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     });
   };
 
+  const uint64 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getBigUint64(offset, true);
+      byteSize ||= BYTE_SIZE_8;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
   const float32 = (options: BaseOptions = {}) => {
     const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
@@ -224,6 +235,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     uint16,
     int32,
     int64,
+    uint64,
     uint32,
     float32,
     float64,

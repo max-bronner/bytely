@@ -23,6 +23,7 @@ export interface Member {
   int32(options?: BaseOptions): void;
   uint32(options?: BaseOptions): void;
   int64(options?: BaseOptions): void;
+  uint64(options?: BaseOptions): void;
   float32(options?: BaseOptions): void;
   float64(options?: BaseOptions): void;
   string(options?: BaseOptions): void;
