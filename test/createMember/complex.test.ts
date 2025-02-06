@@ -86,7 +86,7 @@ describe('Complex Types', () => {
 
   describe('Custom Parser', () => {
     it('should return custom data type', () => {
-      const customParser = (view: DataView, offset: number, data: ParsedData) => {
+      const customParser = (view: DataView, offset: number) => {
         const byteSize = 4;
         const result = view.getBigInt64(offset, true);
         return { byteSize, result };
