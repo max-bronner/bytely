@@ -167,7 +167,7 @@ describe('Primitive Types', () => {
   });
 
   describe('int64', () => {
-    it('should return int32 value', () => {
+    it('should return int64 value', () => {
       view.setBigInt64(0, -12345n, true);
       struct.addMember('value').int64({ debug: true });
 
@@ -178,6 +178,36 @@ describe('Primitive Types', () => {
     it('should return null for invalid offset', () => {
       view.setUint32(0, 0, true);
       struct.addMember('value').pointer({ allowNullPointer: false }).int64();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeNull();
+    });
+  });
+
+  describe('uint64', () => {
+    beforeEach(() => {
+      struct.addMember('value').uint64({ debug: true });
+    });
+
+    it('should return uint64 value', () => {
+      view.setBigUint64(0, 123456n, true);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(123456n);
+    });
+
+    it('should not return negative values', () => {
+      view.setBigUint64(0, -123456n, true);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).not.toBe(123456n);
+    });
+
+    it('should return null for invalid offset', () => {
+      view.setUint32(0, 0, true);
+
+      struct = createStruct();
+      struct.addMember('value').pointer({ allowNullPointer: false }).uint64();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
@@ -203,7 +233,7 @@ describe('Primitive Types', () => {
   });
 
   describe('float64', () => {
-    it('should return float32 value', () => {
+    it('should return float64 value', () => {
       view.setFloat64(0, 3.1415926535897932, true);
       struct.addMember('value').float64({ debug: true });
 
