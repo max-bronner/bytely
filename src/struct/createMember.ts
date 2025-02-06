@@ -14,6 +14,7 @@ import type {
 const BYTE_SIZE_1 = 1;
 const BYTE_SIZE_2 = 2;
 const BYTE_SIZE_4 = 4;
+const BYTE_SIZE_8 = 8;
 
 const decoder = new TextDecoder();
 
@@ -34,12 +35,34 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     return publicMethods;
   };
 
+  const int8 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getInt8(offset);
+      byteSize ||= BYTE_SIZE_1;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
   const uint8 = (options: BaseOptions = {}) => {
     const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getUint8(offset);
       byteSize ||= BYTE_SIZE_1;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const int16 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getInt16(offset, true);
+      byteSize ||= BYTE_SIZE_2;
       if (debug) console.debug(name, offset, result);
       return result;
     });
@@ -78,12 +101,45 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     });
   };
 
+  const int64 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getBigInt64(offset, true);
+      byteSize ||= BYTE_SIZE_8;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const uint64 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getBigUint64(offset, true);
+      byteSize ||= BYTE_SIZE_8;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
   const float32 = (options: BaseOptions = {}) => {
     const { debug } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
       const result = view.getFloat32(offset, true);
       byteSize ||= BYTE_SIZE_4;
+      if (debug) console.debug(name, offset, result);
+      return result;
+    });
+  };
+
+  const float64 = (options: BaseOptions = {}) => {
+    const { debug } = options;
+    callbacks.push((view: DataView, offset: Offset) => {
+      if (offset === null) return null;
+      const result = view.getFloat64(offset, true);
+      byteSize ||= BYTE_SIZE_8;
       if (debug) console.debug(name, offset, result);
       return result;
     });
@@ -173,11 +229,16 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
 
   const publicMethods: Member = {
     pointer,
+    int8,
     uint8,
+    int16,
     uint16,
     int32,
+    int64,
+    uint64,
     uint32,
     float32,
+    float64,
     string,
     struct,
     structByType,
