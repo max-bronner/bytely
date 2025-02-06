@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createStruct } from '../../src/struct/createStruct';
-import { ParsedData } from '../../src/struct/types';
 
 describe('Complex Types', () => {
   let buffer: ArrayBuffer;
