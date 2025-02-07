@@ -14,7 +14,7 @@ describe('Primitive Types', () => {
 
   describe('uint8', () => {
     beforeEach(() => {
-      struct.addMember('value').uint8({ debug: true });
+      struct.addMember('value').uint8();
     });
 
     it('should return uint8 value', () => {
@@ -44,7 +44,7 @@ describe('Primitive Types', () => {
 
   describe('uint16', () => {
     beforeEach(() => {
-      struct.addMember('value').uint16({ debug: true });
+      struct.addMember('value').uint16();
     });
 
     it('should return uint16 value', () => {
@@ -74,7 +74,7 @@ describe('Primitive Types', () => {
 
   describe('uint32', () => {
     beforeEach(() => {
-      struct.addMember('value').uint32({ debug: true });
+      struct.addMember('value').uint32();
     });
 
     it('should return uint32 value', () => {
@@ -105,7 +105,7 @@ describe('Primitive Types', () => {
   describe('int32', () => {
     it('should return int32 value', () => {
       view.setInt32(0, -12345, true);
-      struct.addMember('value').int32({ debug: true });
+      struct.addMember('value').int32();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(-12345);
@@ -123,7 +123,7 @@ describe('Primitive Types', () => {
   describe('float32', () => {
     it('should return float32 value', () => {
       view.setFloat32(0, 3.14, true);
-      struct.addMember('value').float32({ debug: true });
+      struct.addMember('value').float32();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBeCloseTo(3.14);

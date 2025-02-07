@@ -17,7 +17,7 @@ describe('Complex Types', () => {
     it('should return string', () => {
       const str = 'Test String';
       textEncoder.encodeInto(str, new Uint8Array(buffer));
-      struct.addMember('text').string({ debug: true });
+      struct.addMember('text').string();
 
       const result = struct.parse(view, 0);
       expect(result.text).toBe(str);
@@ -27,7 +27,7 @@ describe('Complex Types', () => {
   describe('Arrays', () => {
     it('should return array data with fixed length', () => {
       new Uint8Array(buffer).set([40, 41, 42, 43]);
-      struct.addMember('values').array(4, { debug: true }).uint8();
+      struct.addMember('values').array(4).uint8();
 
       const result = struct.parse(view, 0);
       expect(result.values).toEqual([40, 41, 42, 43]);
@@ -54,7 +54,7 @@ describe('Complex Types', () => {
       subStruct.addMember('float').float32();
 
       struct.addMember('int').uint32();
-      struct.addMember('subStruct').struct(subStruct, { debug: true });
+      struct.addMember('subStruct').struct(subStruct);
 
       const result = struct.parse(view, 0);
       expect(result.int).toBe(42);
@@ -75,7 +75,7 @@ describe('Complex Types', () => {
       };
 
       struct.addMember('int').uint32();
-      struct.addMember('subStruct').structByType(structMap, { debug: true });
+      struct.addMember('subStruct').structByType(structMap);
 
       const result = struct.parse(view, 0);
       expect(result.int).toBe(42);
@@ -92,7 +92,7 @@ describe('Complex Types', () => {
       };
 
       view.setBigInt64(0, 123456789n, true);
-      struct.addMember('bigInt').custom(customParser, { debug: true });
+      struct.addMember('bigInt').custom(customParser);
 
       const result = struct.parse(view, 0);
       expect(result.bigInt).toBe(123456789n);
