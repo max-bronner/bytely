@@ -180,6 +180,16 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setInt32(4, -12345, true);
+
+      struct = createStruct();
+      struct.addMember('value').int32({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, -12345);
+    });
   });
 
   describe('uint32', () => {
