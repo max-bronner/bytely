@@ -288,6 +288,16 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setBigUint64(4, 123456n, true);
+
+      struct = createStruct();
+      struct.addMember('value').uint64({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, 123456n);
+    });
   });
 
   describe('float32', () => {
