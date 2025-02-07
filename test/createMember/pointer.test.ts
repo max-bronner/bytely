@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createStruct } from '../../src/struct/createStruct';
 
 describe('Pointer', () => {
@@ -62,5 +62,16 @@ describe('Pointer', () => {
     const result = struct.parse(view, 0);
     expect(result.pointer1).toBe(1234);
     expect(result.pointer2).toBe(5678);
+  });
+
+  it('should log debugging info in console', () => {
+    const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+
+    view.setUint32(0, 1234, true);
+    struct.addMember('pointer').pointer({ debug: true });
+    struct.parse(view, 0);
+
+    expect(consoleSpy).toHaveBeenCalledWith('pointer', 0, 1234);
+    consoleSpy.mockRestore();
   });
 });
