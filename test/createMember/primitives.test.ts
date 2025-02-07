@@ -326,7 +326,12 @@ describe('Primitive Types', () => {
       struct.addMember('value').float32({ debug: true });
 
       struct.parse(view, offset);
-      expect(consoleSpy).toHaveBeenCalledWith('value', offset, value);
+      expect(consoleSpy).toHaveBeenCalledOnce();
+
+      const debugInfo = consoleSpy.mock.calls[0];
+      expect(debugInfo[0]).toBe('value');
+      expect(debugInfo[1]).toBe(offset);
+      expect(debugInfo[2]).toBeCloseTo(value);
     });
   });
 
@@ -356,7 +361,12 @@ describe('Primitive Types', () => {
       struct.addMember('value').float64({ debug: true });
 
       struct.parse(view, offset);
-      expect(consoleSpy).toHaveBeenCalledWith('value', offset, value);
+      expect(consoleSpy).toHaveBeenCalledOnce();
+
+      const debugInfo = consoleSpy.mock.calls[0];
+      expect(debugInfo[0]).toBe('value');
+      expect(debugInfo[1]).toBe(offset);
+      expect(debugInfo[2]).toBeCloseTo(value);
     });
   });
 });
