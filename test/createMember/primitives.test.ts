@@ -79,6 +79,16 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setUint8(2, 42);
+
+      struct = createStruct();
+      struct.addMember('value').uint8({ debug: true });
+
+      struct.parse(view, 2);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 2, 42);
+    });
   });
 
   describe('int16', () => {
