@@ -1,7 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { createStruct } from '../../src/struct/createStruct';
 
 describe('Primitive Types', () => {
+  const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+
   let buffer: ArrayBuffer;
   let view: DataView;
   let struct: ReturnType<typeof createStruct>; // Struct<ParsedData>
@@ -10,6 +12,10 @@ describe('Primitive Types', () => {
     buffer = new ArrayBuffer(20);
     view = new DataView(buffer);
     struct = createStruct();
+  });
+
+  afterEach(() => {
+    consoleSpy.mockReset(); // Fully restores the original console.log
   });
 
   describe('int8', () => {
@@ -32,6 +38,16 @@ describe('Primitive Types', () => {
 
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
+    });
+
+    it('should log debugging info in console', () => {
+      view.setInt8(2, -42);
+
+      struct = createStruct();
+      struct.addMember('value').int8({ debug: true });
+
+      struct.parse(view, 2);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 2, -42);
     });
   });
 
