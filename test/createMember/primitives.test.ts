@@ -351,18 +351,15 @@ describe('Primitive Types', () => {
     });
 
     it('should log debugging info in console', () => {
-      view.setFloat64(4, 3.1415926535897932, true);
+      const value = 3.1415926535897932;
+      const offset = 4;
+      view.setFloat64(offset, value, true);
 
       struct = createStruct();
       struct.addMember('value').float64({ debug: true });
 
-      struct.parse(view, 4);
-      expect(consoleSpy).toHaveBeenCalledOnce();
-
-      const debugInfo = consoleSpy.mock.calls[0];
-      expect(debugInfo[0]).toBe('value');
-      expect(debugInfo[1]).toBe(4);
-      expect(debugInfo[2]).toBeCloseTo(3.1415926535897932);
+      struct.parse(view, offset);
+      expect(consoleSpy).toHaveBeenCalledWith('value', offset, value);
     });
   });
 });
