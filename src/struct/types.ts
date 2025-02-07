@@ -16,11 +16,16 @@ export interface PointerOptions extends BaseOptions {
 
 export interface Member {
   pointer(options?: PointerOptions): Member;
+  int8(options?: BaseOptions): void;
   uint8(options?: BaseOptions): void;
+  int16(options?: BaseOptions): void;
   uint16(options?: BaseOptions): void;
   int32(options?: BaseOptions): void;
   uint32(options?: BaseOptions): void;
+  int64(options?: BaseOptions): void;
+  uint64(options?: BaseOptions): void;
   float32(options?: BaseOptions): void;
+  float64(options?: BaseOptions): void;
   string(options?: BaseOptions): void;
   struct(struct: Struct<ParsedData>, options?: BaseOptions): void;
   structByType(structMap: StructMap, options?: BaseOptions): void;
