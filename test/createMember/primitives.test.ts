@@ -14,7 +14,7 @@ describe('Primitive Types', () => {
 
   describe('int8', () => {
     beforeEach(() => {
-      struct.addMember('value').int8({ debug: true });
+      struct.addMember('value').int8();
     });
 
     it('should return int8 value', () => {
@@ -67,7 +67,7 @@ describe('Primitive Types', () => {
 
   describe('int16', () => {
     beforeEach(() => {
-      struct.addMember('value').int16({ debug: true });
+      struct.addMember('value').int16();
     });
 
     it('should return int16 value', () => {
@@ -121,7 +121,7 @@ describe('Primitive Types', () => {
   describe('int32', () => {
     it('should return int32 value', () => {
       view.setInt32(0, -12345, true);
-      struct.addMember('value').int32({ debug: true });
+      struct.addMember('value').int32();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(-12345);
@@ -169,7 +169,7 @@ describe('Primitive Types', () => {
   describe('int64', () => {
     it('should return int64 value', () => {
       view.setBigInt64(0, -12345n, true);
-      struct.addMember('value').int64({ debug: true });
+      struct.addMember('value').int64();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(-12345n);
@@ -186,7 +186,7 @@ describe('Primitive Types', () => {
 
   describe('uint64', () => {
     beforeEach(() => {
-      struct.addMember('value').uint64({ debug: true });
+      struct.addMember('value').uint64();
     });
 
     it('should return uint64 value', () => {
@@ -235,7 +235,7 @@ describe('Primitive Types', () => {
   describe('float64', () => {
     it('should return float64 value', () => {
       view.setFloat64(0, 3.1415926535897932, true);
-      struct.addMember('value').float64({ debug: true });
+      struct.addMember('value').float64();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBeCloseTo(3.1415926535897932);
