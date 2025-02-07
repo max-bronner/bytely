@@ -301,12 +301,13 @@ describe('Primitive Types', () => {
   });
 
   describe('float32', () => {
+    const value = 2.718;
     it('should return float32 value', () => {
-      view.setFloat32(0, 3.14, true);
+      view.setFloat32(0, value, true);
       struct.addMember('value').float32();
 
       const result = struct.parse(view, 0);
-      expect(result.value).toBeCloseTo(3.14);
+      expect(result.value).toBeCloseTo(value);
     });
 
     it('should return null for invalid offset', () => {
@@ -318,28 +319,25 @@ describe('Primitive Types', () => {
     });
 
     it('should log debugging info in console', () => {
-      view.setFloat32(4, 2.718, true);
+      const offset = 4;
+      view.setFloat32(offset, value, true);
 
       struct = createStruct();
       struct.addMember('value').float32({ debug: true });
 
-      struct.parse(view, 4);
-      expect(consoleSpy).toHaveBeenCalledOnce();
-
-      const debugInfo = consoleSpy.mock.calls[0];
-      expect(debugInfo[0]).toBe('value');
-      expect(debugInfo[1]).toBe(4);
-      expect(debugInfo[2]).toBeCloseTo(2.718);
+      struct.parse(view, offset);
+      expect(consoleSpy).toHaveBeenCalledWith('value', offset, value);
     });
   });
 
   describe('float64', () => {
+    const value = 3.1415926535897932;
     it('should return float64 value', () => {
-      view.setFloat64(0, 3.1415926535897932, true);
+      view.setFloat64(0, value, true);
       struct.addMember('value').float64();
 
       const result = struct.parse(view, 0);
-      expect(result.value).toBeCloseTo(3.1415926535897932);
+      expect(result.value).toBeCloseTo(value);
     });
 
     it('should return null for invalid offset', () => {
@@ -351,7 +349,6 @@ describe('Primitive Types', () => {
     });
 
     it('should log debugging info in console', () => {
-      const value = 3.1415926535897932;
       const offset = 4;
       view.setFloat64(offset, value, true);
 
