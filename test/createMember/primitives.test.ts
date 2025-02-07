@@ -152,6 +152,16 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setUint16(4, 1234, true);
+
+      struct = createStruct();
+      struct.addMember('value').uint16({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, 1234);
+    });
   });
 
   describe('int32', () => {
