@@ -349,5 +349,20 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setFloat64(4, 3.1415926535897932, true);
+
+      struct = createStruct();
+      struct.addMember('value').float64({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledOnce();
+
+      const debugInfo = consoleSpy.mock.calls[0];
+      expect(debugInfo[0]).toBe('value');
+      expect(debugInfo[1]).toBe(4);
+      expect(debugInfo[2]).toBeCloseTo(3.1415926535897932);
+    });
   });
 });
