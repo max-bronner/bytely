@@ -1,7 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createStruct } from '../../src/struct/createStruct';
 
 describe('Complex Types', () => {
+  const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+
   let buffer: ArrayBuffer;
   let view: DataView;
   let struct: ReturnType<typeof createStruct>; // Struct<ParsedData>
@@ -13,6 +15,10 @@ describe('Complex Types', () => {
     struct = createStruct();
   });
 
+  afterEach(() => {
+    consoleSpy.mockReset();
+  });
+
   describe('Strings', () => {
     it('should return string', () => {
       const str = 'Test String';
@@ -21,6 +27,15 @@ describe('Complex Types', () => {
 
       const result = struct.parse(view, 0);
       expect(result.text).toBe(str);
+    });
+
+    it('should log debugging info in console', () => {
+      const str = 'Test String';
+      textEncoder.encodeInto(str, new Uint8Array(buffer));
+      struct.addMember('text').string({ debug: true });
+
+      struct.parse(view, 0);
+      expect(consoleSpy).toHaveBeenCalledWith('text', 0, str);
     });
   });
 
