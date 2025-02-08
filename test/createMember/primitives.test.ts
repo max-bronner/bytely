@@ -1,10 +1,13 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { createStruct } from '../../src/struct/createStruct';
 
 describe('Primitive Types', () => {
+  const consoleSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+
   let buffer: ArrayBuffer;
   let view: DataView;
   let struct: ReturnType<typeof createStruct>; // Struct<ParsedData>
+  const textEncoder = new TextEncoder();
 
   beforeEach(() => {
     buffer = new ArrayBuffer(20);
@@ -12,9 +15,13 @@ describe('Primitive Types', () => {
     struct = createStruct();
   });
 
+  afterEach(() => {
+    consoleSpy.mockReset(); // Fully restores the original console.log
+  });
+
   describe('int8', () => {
     beforeEach(() => {
-      struct.addMember('value').int8({ debug: true });
+      struct.addMember('value').int8();
     });
 
     it('should return int8 value', () => {
@@ -33,11 +40,21 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setInt8(2, -42);
+
+      struct = createStruct();
+      struct.addMember('value').int8({ debug: true });
+
+      struct.parse(view, 2);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 2, -42);
+    });
   });
 
   describe('uint8', () => {
     beforeEach(() => {
-      struct.addMember('value').uint8({ debug: true });
+      struct.addMember('value').uint8();
     });
 
     it('should return uint8 value', () => {
@@ -63,11 +80,21 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setUint8(2, 42);
+
+      struct = createStruct();
+      struct.addMember('value').uint8({ debug: true });
+
+      struct.parse(view, 2);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 2, 42);
+    });
   });
 
   describe('int16', () => {
     beforeEach(() => {
-      struct.addMember('value').int16({ debug: true });
+      struct.addMember('value').int16();
     });
 
     it('should return int16 value', () => {
@@ -86,11 +113,21 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setInt16(4, -1234, true);
+
+      struct = createStruct();
+      struct.addMember('value').int16({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, -1234);
+    });
   });
 
   describe('uint16', () => {
     beforeEach(() => {
-      struct.addMember('value').uint16({ debug: true });
+      struct.addMember('value').uint16();
     });
 
     it('should return uint16 value', () => {
@@ -116,12 +153,22 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setUint16(4, 1234, true);
+
+      struct = createStruct();
+      struct.addMember('value').uint16({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, 1234);
+    });
   });
 
   describe('int32', () => {
     it('should return int32 value', () => {
       view.setInt32(0, -12345, true);
-      struct.addMember('value').int32({ debug: true });
+      struct.addMember('value').int32();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(-12345);
@@ -134,11 +181,21 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setInt32(4, -12345, true);
+
+      struct = createStruct();
+      struct.addMember('value').int32({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, -12345);
+    });
   });
 
   describe('uint32', () => {
     beforeEach(() => {
-      struct.addMember('value').uint32({ debug: true });
+      struct.addMember('value').uint32();
     });
 
     it('should return uint32 value', () => {
@@ -164,12 +221,22 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setUint32(4, 123456, true);
+
+      struct = createStruct();
+      struct.addMember('value').uint32({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, 123456);
+    });
   });
 
   describe('int64', () => {
     it('should return int64 value', () => {
       view.setBigInt64(0, -12345n, true);
-      struct.addMember('value').int64({ debug: true });
+      struct.addMember('value').int64();
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(-12345n);
@@ -182,11 +249,21 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setBigInt64(4, -12345n, true);
+
+      struct = createStruct();
+      struct.addMember('value').int64({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, -12345n);
+    });
   });
 
   describe('uint64', () => {
     beforeEach(() => {
-      struct.addMember('value').uint64({ debug: true });
+      struct.addMember('value').uint64();
     });
 
     it('should return uint64 value', () => {
@@ -212,15 +289,26 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      view.setBigUint64(4, 123456n, true);
+
+      struct = createStruct();
+      struct.addMember('value').uint64({ debug: true });
+
+      struct.parse(view, 4);
+      expect(consoleSpy).toHaveBeenCalledWith('value', 4, 123456n);
+    });
   });
 
   describe('float32', () => {
+    const value = 2.718;
     it('should return float32 value', () => {
-      view.setFloat32(0, 3.14, true);
-      struct.addMember('value').float32({ debug: true });
+      view.setFloat32(0, value, true);
+      struct.addMember('value').float32();
 
       const result = struct.parse(view, 0);
-      expect(result.value).toBeCloseTo(3.14);
+      expect(result.value).toBeCloseTo(value);
     });
 
     it('should return null for invalid offset', () => {
@@ -230,15 +318,32 @@ describe('Primitive Types', () => {
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
     });
+
+    it('should log debugging info in console', () => {
+      const offset = 4;
+      view.setFloat32(offset, value, true);
+
+      struct = createStruct();
+      struct.addMember('value').float32({ debug: true });
+
+      struct.parse(view, offset);
+      expect(consoleSpy).toHaveBeenCalledOnce();
+
+      const debugInfo = consoleSpy.mock.calls[0];
+      expect(debugInfo[0]).toBe('value');
+      expect(debugInfo[1]).toBe(offset);
+      expect(debugInfo[2]).toBeCloseTo(value);
+    });
   });
 
   describe('float64', () => {
+    const value = 3.1415926535897932;
     it('should return float64 value', () => {
-      view.setFloat64(0, 3.1415926535897932, true);
-      struct.addMember('value').float64({ debug: true });
+      view.setFloat64(0, value, true);
+      struct.addMember('value').float64();
 
       const result = struct.parse(view, 0);
-      expect(result.value).toBeCloseTo(3.1415926535897932);
+      expect(result.value).toBeCloseTo(value);
     });
 
     it('should return null for invalid offset', () => {
@@ -247,6 +352,42 @@ describe('Primitive Types', () => {
 
       const result = struct.parse(view, 0);
       expect(result.value).toBeNull();
+    });
+
+    it('should log debugging info in console', () => {
+      const offset = 4;
+      view.setFloat64(offset, value, true);
+
+      struct = createStruct();
+      struct.addMember('value').float64({ debug: true });
+
+      struct.parse(view, offset);
+      expect(consoleSpy).toHaveBeenCalledOnce();
+
+      const debugInfo = consoleSpy.mock.calls[0];
+      expect(debugInfo[0]).toBe('value');
+      expect(debugInfo[1]).toBe(offset);
+      expect(debugInfo[2]).toBeCloseTo(value);
+    });
+  });
+
+  describe('Strings', () => {
+    it('should return string', () => {
+      const str = 'Test String';
+      textEncoder.encodeInto(str, new Uint8Array(buffer));
+      struct.addMember('text').string();
+
+      const result = struct.parse(view, 0);
+      expect(result.text).toBe(str);
+    });
+
+    it('should log debugging info in console', () => {
+      const str = 'Test String';
+      textEncoder.encodeInto(str, new Uint8Array(buffer));
+      struct.addMember('text').string({ debug: true });
+
+      struct.parse(view, 0);
+      expect(consoleSpy).toHaveBeenCalledWith('text', 0, str);
     });
   });
 });
