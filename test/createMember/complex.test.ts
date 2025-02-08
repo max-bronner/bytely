@@ -104,6 +104,20 @@ describe('Complex Types', () => {
       expect(result.int).toBe(42);
       expect(result.subStruct.float).toBeCloseTo(3.14);
     });
+
+    it('should log debugging info in console', () => {
+      view.setUint32(0, 42, true);
+      view.setInt16(4, 1234, true);
+
+      const subStruct = createStruct();
+      subStruct.addMember('int16').int16();
+
+      struct.addMember('int32').uint32();
+      struct.addMember('subStruct').struct(subStruct, { debug: true });
+
+      struct.parse(view, 0);
+      expect(consoleSpy).toHaveBeenCalledWith('subStruct', 4, { int16: 1234 });
+    });
   });
 
   describe('Custom Parser', () => {
