@@ -7,7 +7,6 @@ describe('Complex Types', () => {
   let buffer: ArrayBuffer;
   let view: DataView;
   let struct: ReturnType<typeof createStruct>; // Struct<ParsedData>
-  const textEncoder = new TextEncoder();
 
   beforeEach(() => {
     buffer = new ArrayBuffer(100);
