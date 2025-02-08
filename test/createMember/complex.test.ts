@@ -58,6 +58,14 @@ describe('Complex Types', () => {
       const result = struct.parse(view, 0);
       expect(result.values).toEqual([40, 41, 42, 43]);
     });
+
+    it('should log debugging info in console', () => {
+      new Uint8Array(buffer).set([40, 41, 42, 43]);
+      struct.addMember('values').array(4, { debug: true }).uint8();
+
+      struct.parse(view, 0);
+      expect(consoleSpy).toHaveBeenCalledWith('values', 0, [40, 41, 42, 43]);
+    });
   });
 
   describe('Structs', () => {
