@@ -135,4 +135,18 @@ describe('Complex Types', () => {
       expect(result.bigInt).toBe(123456789n);
     });
   });
+
+  it('should log debugging info in console', () => {
+    const customParser = (view: DataView, offset: number) => {
+      const byteSize = 4;
+      const result = view.getBigInt64(offset, true);
+      return { byteSize, result };
+    };
+
+    view.setBigInt64(0, 123456789n, true);
+    struct.addMember('bigInt').custom(customParser, { debug: true });
+
+    struct.parse(view, 0);
+    expect(consoleSpy).toHaveBeenCalledWith('bigInt', 0, 123456789n);
+  });
 });
