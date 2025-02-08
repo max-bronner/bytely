@@ -369,4 +369,24 @@ describe('Primitive Types', () => {
       expect(debugInfo[2]).toBeCloseTo(value);
     });
   });
+
+  describe('Strings', () => {
+    it('should return string', () => {
+      const str = 'Test String';
+      textEncoder.encodeInto(str, new Uint8Array(buffer));
+      struct.addMember('text').string();
+
+      const result = struct.parse(view, 0);
+      expect(result.text).toBe(str);
+    });
+
+    it('should log debugging info in console', () => {
+      const str = 'Test String';
+      textEncoder.encodeInto(str, new Uint8Array(buffer));
+      struct.addMember('text').string({ debug: true });
+
+      struct.parse(view, 0);
+      expect(consoleSpy).toHaveBeenCalledWith('text', 0, str);
+    });
+  });
 });
