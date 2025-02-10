@@ -24,10 +24,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   const callbacks: ParserCallback[] = [];
 
   const pointer = (options: PointerOptions = {}) => {
-    const { debug, allowNullPointer = false } = options;
+    const { debug, littleEndian = true, allowNullPointer = false } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getUint32(offset, true);
+      const result = view.getUint32(offset, littleEndian);
       byteSize ||= BYTE_SIZE_4;
       if (debug) console.debug(name, offset, result);
       return allowNullPointer || result !== 0 ? result : null;
@@ -58,10 +58,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   };
 
   const int16 = (options: BaseOptions = {}) => {
-    const { debug } = options;
+    const { debug, littleEndian = true } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getInt16(offset, true);
+      const result = view.getInt16(offset, littleEndian);
       byteSize ||= BYTE_SIZE_2;
       if (debug) console.debug(name, offset, result);
       return result;
@@ -69,10 +69,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   };
 
   const uint16 = (options: BaseOptions = {}) => {
-    const { debug } = options;
+    const { debug, littleEndian = true } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getUint16(offset, true);
+      const result = view.getUint16(offset, littleEndian);
       byteSize ||= BYTE_SIZE_2;
       if (debug) console.debug(name, offset, result);
       return result;
@@ -80,10 +80,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   };
 
   const int32 = (options: BaseOptions = {}) => {
-    const { debug } = options;
+    const { debug, littleEndian = true } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getInt32(offset, true);
+      const result = view.getInt32(offset, littleEndian);
       byteSize ||= BYTE_SIZE_4;
       if (debug) console.debug(name, offset, result);
       return result;
@@ -91,10 +91,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   };
 
   const uint32 = (options: BaseOptions = {}) => {
-    const { debug } = options;
+    const { debug, littleEndian = true } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getUint32(offset, true);
+      const result = view.getUint32(offset, littleEndian);
       byteSize ||= BYTE_SIZE_4;
       if (debug) console.debug(name, offset, result);
       return result;
@@ -102,10 +102,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   };
 
   const int64 = (options: BaseOptions = {}) => {
-    const { debug } = options;
+    const { debug, littleEndian = true } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getBigInt64(offset, true);
+      const result = view.getBigInt64(offset, littleEndian);
       byteSize ||= BYTE_SIZE_8;
       if (debug) console.debug(name, offset, result);
       return result;
@@ -113,10 +113,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   };
 
   const uint64 = (options: BaseOptions = {}) => {
-    const { debug } = options;
+    const { debug, littleEndian = true } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getBigUint64(offset, true);
+      const result = view.getBigUint64(offset, littleEndian);
       byteSize ||= BYTE_SIZE_8;
       if (debug) console.debug(name, offset, result);
       return result;
@@ -124,10 +124,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   };
 
   const float32 = (options: BaseOptions = {}) => {
-    const { debug } = options;
+    const { debug, littleEndian = true } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getFloat32(offset, true);
+      const result = view.getFloat32(offset, littleEndian);
       byteSize ||= BYTE_SIZE_4;
       if (debug) console.debug(name, offset, result);
       return result;
@@ -135,10 +135,10 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
   };
 
   const float64 = (options: BaseOptions = {}) => {
-    const { debug } = options;
+    const { debug, littleEndian = true } = options;
     callbacks.push((view: DataView, offset: Offset) => {
       if (offset === null) return null;
-      const result = view.getFloat64(offset, true);
+      const result = view.getFloat64(offset, littleEndian);
       byteSize ||= BYTE_SIZE_8;
       if (debug) console.debug(name, offset, result);
       return result;
