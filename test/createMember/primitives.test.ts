@@ -104,6 +104,16 @@ describe('Primitive Types', () => {
       expect(result.value).toBe(-1234);
     });
 
+    it('should return int16 value using big endian', () => {
+      view.setInt16(0, -1234, false);
+
+      struct = createStruct();
+      struct.addMember('value').int16({ littleEndian: false });
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(-1234);
+    });
+
     it('should return null for invalid offset', () => {
       view.setUint32(0, 0, true);
 
@@ -132,6 +142,16 @@ describe('Primitive Types', () => {
 
     it('should return uint16 value', () => {
       view.setUint16(0, 1234, true);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(1234);
+    });
+
+    it('should return uint16 value using big endian', () => {
+      view.setUint16(0, 1234, false);
+
+      struct = createStruct();
+      struct.addMember('value').uint16({ littleEndian: false });
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(1234);
@@ -174,6 +194,14 @@ describe('Primitive Types', () => {
       expect(result.value).toBe(-12345);
     });
 
+    it('should return int32 value using big endian', () => {
+      view.setInt32(0, -12345, false);
+      struct.addMember('value').int32({ littleEndian: false });
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(-12345);
+    });
+
     it('should return null for invalid offset', () => {
       view.setUint32(0, 0, true);
       struct.addMember('value').pointer({ allowNullPointer: false }).int32();
@@ -200,6 +228,16 @@ describe('Primitive Types', () => {
 
     it('should return uint32 value', () => {
       view.setUint32(0, 123456, true);
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(123456);
+    });
+
+    it('should return uint32 value using big endian', () => {
+      view.setUint32(0, 123456, false);
+
+      struct = createStruct();
+      struct.addMember('value').uint32({ littleEndian: false });
 
       const result = struct.parse(view, 0);
       expect(result.value).toBe(123456);
@@ -242,6 +280,14 @@ describe('Primitive Types', () => {
       expect(result.value).toBe(-12345n);
     });
 
+    it('should return int64 value using big endian', () => {
+      view.setBigInt64(0, -12345n, false);
+      struct.addMember('value').int64({ littleEndian: false });
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(-12345n);
+    });
+
     it('should return null for invalid offset', () => {
       view.setUint32(0, 0, true);
       struct.addMember('value').pointer({ allowNullPointer: false }).int64();
@@ -267,6 +313,16 @@ describe('Primitive Types', () => {
     });
 
     it('should return uint64 value', () => {
+      view.setBigUint64(0, 123456n, false);
+
+      struct = createStruct();
+      struct.addMember('value').uint64({ littleEndian: false });
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBe(123456n);
+    });
+
+    it('should return uint64 value using big endian', () => {
       view.setBigUint64(0, 123456n, true);
 
       const result = struct.parse(view, 0);
@@ -311,6 +367,14 @@ describe('Primitive Types', () => {
       expect(result.value).toBeCloseTo(value);
     });
 
+    it('should return float32 value using big endian', () => {
+      view.setFloat32(0, value, false);
+      struct.addMember('value').float32({ littleEndian: false });
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeCloseTo(value);
+    });
+
     it('should return null for invalid offset', () => {
       view.setUint32(0, 0, true);
       struct.addMember('value').pointer({ allowNullPointer: false }).float32();
@@ -341,6 +405,14 @@ describe('Primitive Types', () => {
     it('should return float64 value', () => {
       view.setFloat64(0, value, true);
       struct.addMember('value').float64();
+
+      const result = struct.parse(view, 0);
+      expect(result.value).toBeCloseTo(value);
+    });
+
+    it('should return float64 value using big endian', () => {
+      view.setFloat64(0, value, false);
+      struct.addMember('value').float64({ littleEndian: false });
 
       const result = struct.parse(view, 0);
       expect(result.value).toBeCloseTo(value);

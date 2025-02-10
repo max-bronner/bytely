@@ -20,6 +20,14 @@ describe('Pointer', () => {
     expect(result.pointer).toBe(1234);
   });
 
+  it('should return pointer using big endian', () => {
+    view.setUint32(0, 1234, false);
+    struct.addMember('pointer').pointer({ littleEndian: false });
+
+    const result = struct.parse(view, 0);
+    expect(result.pointer).toBe(1234);
+  });
+
   it('should return 0 for allowed null pointer', () => {
     view.setUint32(0, 0, true);
     struct.addMember('pointer').pointer({ allowNullPointer: true });

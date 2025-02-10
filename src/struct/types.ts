@@ -9,6 +9,7 @@ export type CustomCallback = (view: DataView, offset: number, data: ParsedData) 
 
 export interface BaseOptions {
   debug?: boolean;
+  littleEndian?: boolean;
 }
 export interface PointerOptions extends BaseOptions {
   allowNullPointer?: boolean;
