@@ -11,195 +11,105 @@ import type {
   StructMap,
 } from './types';
 
-const BYTE_SIZE_1 = 1;
-const BYTE_SIZE_2 = 2;
-const BYTE_SIZE_4 = 4;
-const BYTE_SIZE_8 = 8;
+const POINTER_SIZE = 4;
+const STRING_ALIGNMENT = 4;
 
 const decoder = new TextDecoder();
 
+type NumericReader = (view: DataView, offset: number, littleEndian: boolean) => number | bigint;
+
 export const createMember = <T extends ParsedData>(name: keyof T): Member => {
-  // todo: extract repeating logic from parsing functions
-  let byteSize = 0;
   const callbacks: ParserCallback[] = [];
+  let byteSize = 0;
+
+  const log = (debug: boolean | undefined, offset: number, value: unknown) => {
+    if (debug) console.debug(name, offset, value);
+  };
+
+  const numeric =
+    (size: number, read: NumericReader) =>
+    (options: BaseOptions = {}) => {
+      const { debug, littleEndian = true } = options;
+      callbacks.push((view, offset) => {
+        const result = read(view, offset, littleEndian);
+        if (!byteSize) byteSize = size;
+        log(debug, offset, result);
+        return result;
+      });
+    };
+
+  const int8 = numeric(1, (view, offset) => view.getInt8(offset));
+  const uint8 = numeric(1, (view, offset) => view.getUint8(offset));
+  const int16 = numeric(2, (view, offset, littleEndian) => view.getInt16(offset, littleEndian));
+  const uint16 = numeric(2, (view, offset, littleEndian) => view.getUint16(offset, littleEndian));
+  const int32 = numeric(4, (view, offset, littleEndian) => view.getInt32(offset, littleEndian));
+  const uint32 = numeric(4, (view, offset, littleEndian) => view.getUint32(offset, littleEndian));
+  const int64 = numeric(8, (view, offset, littleEndian) => view.getBigInt64(offset, littleEndian));
+  const uint64 = numeric(8, (view, offset, littleEndian) => view.getBigUint64(offset, littleEndian));
+  const float32 = numeric(4, (view, offset, littleEndian) => view.getFloat32(offset, littleEndian));
+  const float64 = numeric(8, (view, offset, littleEndian) => view.getFloat64(offset, littleEndian));
 
   const pointer = (options: PointerOptions = {}) => {
     const { debug, littleEndian = true, allowNullPointer = false } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getUint32(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_4;
-      if (debug) console.debug(name, offset, result);
-      return allowNullPointer || result !== 0 ? result : null;
+    callbacks.push((view, offset) => {
+      const address = view.getUint32(offset, littleEndian);
+      if (!byteSize) byteSize = POINTER_SIZE;
+      log(debug, offset, address);
+      return allowNullPointer || address !== 0 ? address : null;
     });
     return publicMethods;
   };
 
-  const int8 = (options: BaseOptions = {}) => {
-    const { debug } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getInt8(offset);
-      byteSize ||= BYTE_SIZE_1;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const uint8 = (options: BaseOptions = {}) => {
-    const { debug } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getUint8(offset);
-      byteSize ||= BYTE_SIZE_1;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const int16 = (options: BaseOptions = {}) => {
-    const { debug, littleEndian = true } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getInt16(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_2;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const uint16 = (options: BaseOptions = {}) => {
-    const { debug, littleEndian = true } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getUint16(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_2;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const int32 = (options: BaseOptions = {}) => {
-    const { debug, littleEndian = true } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getInt32(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_4;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const uint32 = (options: BaseOptions = {}) => {
-    const { debug, littleEndian = true } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getUint32(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_4;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const int64 = (options: BaseOptions = {}) => {
-    const { debug, littleEndian = true } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getBigInt64(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_8;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const uint64 = (options: BaseOptions = {}) => {
-    const { debug, littleEndian = true } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getBigUint64(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_8;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const float32 = (options: BaseOptions = {}) => {
-    const { debug, littleEndian = true } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getFloat32(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_4;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
-  const float64 = (options: BaseOptions = {}) => {
-    const { debug, littleEndian = true } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const result = view.getFloat64(offset, littleEndian);
-      byteSize ||= BYTE_SIZE_8;
-      if (debug) console.debug(name, offset, result);
-      return result;
-    });
-  };
-
   const string = (options: BaseOptions = {}) => {
     const { debug } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const charArray = new Uint8Array(view.buffer, offset);
+    callbacks.push((view, offset) => {
+      const charArray = new Uint8Array(view.buffer, view.byteOffset + offset);
       const nullIndex = charArray.indexOf(0);
-      const stringArray = charArray.subarray(0, nullIndex);
-      const result = decoder.decode(stringArray);
-      byteSize ||= roundUp(nullIndex, 4);
-      if (debug) console.debug(name, offset, result);
+      const result = decoder.decode(charArray.subarray(0, nullIndex));
+      if (!byteSize) byteSize = roundUp(nullIndex, STRING_ALIGNMENT);
+      log(debug, offset, result);
       return result;
     });
   };
 
   const struct = (struct: Struct<ParsedData>, options: BaseOptions = {}) => {
     const { debug } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
-      const structData = struct.parse(view, offset, false);
-      byteSize ||= struct.getCurrentOffset() - offset;
-      if (debug) console.debug(name, offset, structData);
-      return structData;
+    callbacks.push((view, offset) => {
+      const { data, size } = struct.read(view, offset);
+      if (!byteSize) byteSize = size;
+      log(debug, offset, data);
+      return data;
     });
   };
 
   const structByType = (structMap: StructMap, options: BaseOptions = {}) => {
     const { debug } = options;
-    callbacks.push((view: DataView, offset: Offset) => {
-      if (offset === null) return null;
+    callbacks.push((view, offset) => {
       const type = view.getUint8(offset);
       const struct = structMap[type];
       if (!struct) throw Error(`Missing type: Type ${type} not found in mappings`);
-      const structData = struct.parse(view, offset, false);
-      byteSize ||= struct.getCurrentOffset() - offset;
-      if (debug) console.debug(name, offset, structData);
-      return structData;
+      const { data, size } = struct.read(view, offset);
+      if (!byteSize) byteSize = size;
+      log(debug, offset, data);
+      return data;
     });
   };
 
   const array = (count: number | string, options: BaseOptions = {}) => {
     const { debug } = options;
-    const arrayMember = createMember('array');
-    callbacks.push((view: DataView, offset: Offset, data) => {
-      if (offset === null) return null;
+    const arrayMember = createMember('element');
+    callbacks.push((view, offset, data) => {
       // todo: add exception if no number and no data key
-      const iterations = typeof count === 'number' ? count : (data[count] as number);
+      const length = typeof count === 'number' ? count : (data[count] as number);
       const arrayData = [];
       let parsedBytes = 0;
-      for (let i = 0; i < iterations; i++) {
-        const entryData: { array?: any } = {};
-        parsedBytes += arrayMember.parse(view, offset + parsedBytes, entryData);
-        arrayData.push(entryData.array);
+      for (let i = 0; i < length; i++) {
+        const entry: { element?: unknown } = {};
+        parsedBytes += arrayMember.parse(view, offset + parsedBytes, entry);
+        arrayData.push(entry.element);
       }
-      byteSize ||= parsedBytes;
-      if (debug) console.debug(name, offset, arrayData);
+      if (!byteSize) byteSize = parsedBytes;
+      log(debug, offset, arrayData);
       return arrayData;
     });
     return arrayMember;
@@ -207,24 +117,25 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
 
   const custom = (customCallback: CustomCallback, options: BaseOptions = {}) => {
     const { debug } = options;
-    callbacks.push((view: DataView, offset: Offset, data) => {
-      if (offset === null) return null;
+    callbacks.push((view, offset, data) => {
       const { byteSize: size, result } = customCallback(view, offset, data);
-      byteSize ||= size;
-      if (debug) console.debug(name, offset, result);
+      if (!byteSize) byteSize = size;
+      log(debug, offset, result);
       return result;
     });
     return publicMethods;
   };
 
-  const parse = (view: DataView, offset: number, data: Partial<T>) => {
-    const memberData = callbacks.reduce((acc: number, callback: ParserCallback) => {
-      return callback(view, acc, data);
-    }, offset);
-    data[name] = memberData as T[keyof T];
-    const finalByteSize = byteSize;
+  const parse = (view: DataView, offset: number, data: Partial<T>): number => {
+    let cursor: Offset = offset;
+    for (const callback of callbacks) {
+      if (cursor === null) break;
+      cursor = callback(view, cursor, data as ParsedData) as Offset;
+    }
+    data[name] = cursor as T[keyof T];
+    const size = byteSize;
     byteSize = 0;
-    return finalByteSize;
+    return size;
   };
 
   const publicMethods: Member = {
@@ -234,9 +145,9 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     int16,
     uint16,
     int32,
+    uint32,
     int64,
     uint64,
-    uint32,
     float32,
     float64,
     string,

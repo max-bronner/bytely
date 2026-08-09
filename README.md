@@ -144,8 +144,8 @@ addMember(name);
 
 #### Supported Data Types
 
-- `uint8`, `uint16`, `uint32`, `int32`
-- `float32`
+- `int8`, `uint8`, `int16`, `uint16`, `int32`, `uint32`, `int64`, `uint64`
+- `float32`, `float64`
 - `pointer`
 - `string`
 - `struct`, `structByType`
@@ -156,17 +156,22 @@ addMember(name);
 
 ## Endianness
 
-Currently the data type parsing only supports little-endian, but there are plans to add big-endian support in the future.
+Endianness defaults to little-endian. Pass `littleEndian: false` to any multi-byte type method (or `pointer`) to read big-endian data:
+
+```typescript
+struct.addMember('value').uint32({ littleEndian: false });
+```
 
 ---
 
 ## Debugging
 
-Enable debugging by passing an options object with `debug: true` to any parsing method. This will log the member name, current offset and parsed data value:
+Enable debugging by passing an options object with `debug: true` to any member's type method. This will log the member name, current offset and parsed data value:
 
 ```typescript
-const data = struct.parse(view, 0, { debug: true });
-// Output: name offset dataValue
+struct.addMember('number').uint32({ debug: true });
+const data = struct.parse(view, 0);
+// Output: number offset dataValue
 ```
 
 ---
