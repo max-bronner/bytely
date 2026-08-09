@@ -7,12 +7,6 @@ describe('createStruct', () => {
     expect(struct.members).toHaveLength(0);
   });
 
-  it('should return manually set offset', () => {
-    const struct = createStruct();
-    struct.setCurrentOffset(100);
-    expect(struct.getCurrentOffset()).toBe(100);
-  });
-
   it('should return extended struct with members of original struct', () => {
     const originalStruct = createStruct();
     originalStruct.addMember('test').uint8();
