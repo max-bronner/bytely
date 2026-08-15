@@ -20,7 +20,7 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      include: ['**'],
+      include: [resolve(__dirname, 'src')],
     }),
   ],
 });
