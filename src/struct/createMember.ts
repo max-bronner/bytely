@@ -18,7 +18,7 @@ const decoder = new TextDecoder();
 
 type NumericReader = (view: DataView, offset: number, littleEndian: boolean) => number | bigint;
 
-export const createMember = <T extends ParsedData>(name: keyof T): Member => {
+export const createMember = (name: string): Member => {
   const callbacks: ParserCallback[] = [];
   let byteSize = 0;
 
@@ -72,7 +72,7 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     });
   };
 
-  const struct = (struct: Struct<ParsedData>, options: BaseOptions = {}) => {
+  const struct = (struct: Struct<any>, options: BaseOptions = {}) => {
     const { debug } = options;
     callbacks.push((view, offset) => {
       const { data, size } = struct.read(view, offset);
@@ -126,13 +126,13 @@ export const createMember = <T extends ParsedData>(name: keyof T): Member => {
     return publicMethods;
   };
 
-  const parse = (view: DataView, offset: number, data: Partial<T>): number => {
+  const parse = (view: DataView, offset: number, data: ParsedData): number => {
     let cursor: Offset = offset;
     for (const callback of callbacks) {
       if (cursor === null) break;
-      cursor = callback(view, cursor, data as ParsedData) as Offset;
+      cursor = callback(view, cursor, data) as Offset;
     }
-    data[name] = cursor as T[keyof T];
+    data[name] = cursor;
     const size = byteSize;
     byteSize = 0;
     return size;

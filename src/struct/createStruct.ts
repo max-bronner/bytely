@@ -1,17 +1,17 @@
 import { createMember } from './createMember';
-import type { Struct, Member, ParsedData } from './types';
+import type { Struct, Member, MemberBuilder, ParsedData } from './types';
 
-export const createStruct = <T extends ParsedData>(struct?: Struct<Partial<T>>): Struct<T> => {
+export const createStruct = <T extends ParsedData = ParsedData>(struct?: Struct<any>): Struct<T> => {
   const members: Member[] = struct ? [...struct.members] : [];
 
-  const addMember = (name: keyof T) => {
+  const addMember = <K extends keyof T & string>(name: K) => {
     const member = createMember(name);
     members.push(member);
-    return member;
+    return member as unknown as MemberBuilder<T, T[K]>;
   };
 
   const read = (view: DataView, offset: number): { data: T; size: number } => {
-    const data = {} as T;
+    const data: ParsedData = {};
     let cursor = offset;
 
     members.forEach((member) => {
@@ -20,7 +20,7 @@ export const createStruct = <T extends ParsedData>(struct?: Struct<Partial<T>>):
 
     const size = cursor - offset;
 
-    return { data, size };
+    return { data: data as T, size };
   };
 
   const parse = (view: DataView, offset: number = 0): T => {

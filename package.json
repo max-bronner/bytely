@@ -1,6 +1,6 @@
 {
   "name": "bytely",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "description": "Easily parse binary data into JavaScript Objects",
   "typings": "dist/index.d.ts",
@@ -10,7 +10,8 @@
     "build": "tsc && vite build",
     "build:types": "tsc -d --declarationDir dist --declarationMap --emitDeclarationOnly",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:types": "tsc --noEmit"
   },
   "files": [
     "dist"
