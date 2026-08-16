@@ -111,9 +111,9 @@ pointStruct.addMember('y').float32();
 
 // nested struct inside another struct
 const triangleStruct = createStruct();
-point2DStruct.addMember('point1').pointer().struct(pointStruct);
-point2DStruct.addMember('point2').pointer().struct(pointStruct);
-point2DStruct.addMember('point3').pointer().struct(pointStruct);
+triangleStruct.addMember('point1').pointer().struct(pointStruct);
+triangleStruct.addMember('point2').pointer().struct(pointStruct);
+triangleStruct.addMember('point3').pointer().struct(pointStruct);
 
 // handling of arrays
 const pointCloudStruct = createStruct();
@@ -178,11 +178,11 @@ const data = struct.parse(view, 0);
 
 ## TypeScript Support
 
-`bytely` is fully typed, allowing you to define and parse structures with strict type checking.
+Pass an interface to `createStruct` and the definition is checked against it. `parse` returns that type:
 
 ```typescript
 interface Example {
-  name: string;
+  name: string | null;
   red: number;
   green: number;
   blue: number;
@@ -197,8 +197,23 @@ exampleStruct.addMember('blue').uint8();
 exampleStruct.addMember('number').uint32();
 
 const parsedData = exampleStruct.parse(view);
-// parsedData is fully typed according to its struct definition
+// parsedData: Example
 ```
+
+A definition that does not match the declaration is a compile error:
+
+```typescript
+exampleStruct.addMember('red').string(); // declared number, parsed as string
+exampleStruct.addMember('red').uint64(); // declared number, parsed as bigint
+exampleStruct.addMember('nope').uint8(); // 'nope' is not a member of Example
+exampleStruct.addMember('points').array('nope'); // 'nope' is not a numeric member
+```
+
+`array('count')` only accepts the name of a member declared as a `number`, and `pointer()` unwraps `null`, so a
+member that may be a null pointer is declared as `string | null`.
+
+Types are optional: `createStruct()` without a type argument leaves members unrestricted and returns a permissive
+record from `parse`.
 
 ---
 

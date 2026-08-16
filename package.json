@@ -10,7 +10,8 @@
     "build": "tsc && vite build",
     "build:types": "tsc -d --declarationDir dist --declarationMap --emitDeclarationOnly",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:types": "tsc --noEmit"
   },
   "files": [
     "dist"
